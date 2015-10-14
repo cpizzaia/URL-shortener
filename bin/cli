@@ -1,0 +1,32 @@
+user = nil
+begin
+  puts "Input your email:"
+  email = gets.chomp
+  user = User.where(email: email).first
+  puts user.id
+rescue
+  puts "User not found."
+retry
+end
+
+puts "What do you want to do?"
+puts "0. Create shortened URL"
+puts "1. Visit shortened URL"
+input = nil
+until input == 1 || input == 0
+  input = gets.chomp.to_i
+  if input == 0
+    puts "Type in your long url"
+    long_url = gets.chomp
+    ShortenedUrl.create_for_user_and_long_url!(user, long_url)
+    s = ShortenedUrl.where(long_url: long_url).first
+    puts "Short URL is: #{s.short_url}"
+  elsif input == 1
+    puts "Type in the shortened URL"
+    short_url = gets.chomp
+    long_url = ShortenedUrl.where(short_url: short_url).first.long_url
+    Launchy.open(long_url)
+  else
+    puts "Unrecognized input. Please retry."
+  end
+end
