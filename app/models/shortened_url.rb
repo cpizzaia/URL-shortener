@@ -1,6 +1,6 @@
 class ShortenedUrl < ActiveRecord::Base
   include SecureRandom
-
+  validates :long_url, length: { maximum: 1024, message: "URL too long" }
   validates :short_url, :presence => true, :uniqueness => true
 
   belongs_to(
